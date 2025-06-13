@@ -17,6 +17,8 @@ export const Container = styled.div`
   background-color: #161b22;
   border-radius: 16px;
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.7);
+  position: relative;
+  overflow: hidden;
 `;
 
 export const Title = styled.h1`
@@ -70,6 +72,9 @@ export const QuoteItem = styled.div`
   align-items: center;
   gap: 10px;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
 
   &:hover {
     transform: scale(1.02);
