@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import type { DropResult, DroppableProvided, DraggableProvided } from "@hello-pangea/dnd";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { Modal, Button, Form } from 'react-bootstrap';
 import {
@@ -40,7 +41,7 @@ interface QuoteComponentProps {
 function QuoteComponent({ quote, index, onDelete, onEdit }: QuoteComponentProps) {
   return (
     <Draggable draggableId={quote.id} index={index}>
-      {(provided) => (
+      {(provided: DraggableProvided) => (
         <QuoteItem ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps}>
           <span>{quote.content}</span>
           <EditButton onClick={() => onEdit(quote.id)}>Düzenle</EditButton>
@@ -73,9 +74,12 @@ function App() {
   const [editId, setEditId] = useState<string | null>(null);
   const [editText, setEditText] = useState<string>("");
 
-  function onDragEnd(result: any) {
-    if (!result.destination || result.destination.index === result.source.index) return;
-    const newQuotes = reorder(quotes, result.source.index, result.destination.index);
+  function onDragEnd(result: DropResult) {
+    const sourceIndex = result.source?.index;
+    const destinationIndex = result.destination?.index;
+    if (destinationIndex === undefined || sourceIndex === undefined) return;
+    if (destinationIndex === sourceIndex) return;
+    const newQuotes = reorder(quotes, sourceIndex, destinationIndex);
     setQuotes(newQuotes);
   }
 
@@ -127,7 +131,7 @@ function App() {
         </AddTodoContainer>
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId="list">
-            {(provided) => (
+            {(provided: DroppableProvided) => (
               <div ref={provided.innerRef} {...provided.droppableProps}>
                 <QuoteList quotes={quotes} onDelete={handleDelete} onEdit={handleEditStart} />
                 {provided.placeholder}
